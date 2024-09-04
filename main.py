@@ -1,6 +1,24 @@
-from scraper import base_scraper
+from customtkinter import *
+from Visualization.dashboard import Dashboard
+from Scraper import base_scraper
 
-base_scraper.main()
+
+if __name__ == '__main__':
+    window = CTk()
+    dash_board = Dashboard(window)
+    if dash_board.data:
+        print("Done")
+        print(dash_board.data)
+    # base_scraper.main()
+    window.mainloop()
+
+
+
+
+
+
+
+
 
 
 # import time

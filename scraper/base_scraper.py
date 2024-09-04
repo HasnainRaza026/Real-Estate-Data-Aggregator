@@ -1,5 +1,4 @@
-from scraper.zameen_scraper import Zameen_Scraper
-
+from Scraper.zameen_scraper import Zameen_Scraper
 
 def main():
     zameen = Zameen_Scraper()

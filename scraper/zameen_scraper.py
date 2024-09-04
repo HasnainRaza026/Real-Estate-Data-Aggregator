@@ -15,15 +15,14 @@ class Zameen_Scraper:
         # Open a webpage
         driver.get("https://www.zameen.com/")
 
+
         # Refresh the page
         driver.refresh()
 
         # Optional: Wait for the page to load again
-        # waits up to 10 seconds for elements to be present
-        driver.implicitly_wait(10)
+        driver.implicitly_wait(10)  # waits up to 10 seconds for elements to be present
 
-        rent_button = driver.find_element(
-            By.XPATH, '//*[@id="body-wrapper"]/header/div[6]/div/div[2]/div[1]/div/button[2]')
+        rent_button = driver.find_element(By.XPATH, '//*[@id="body-wrapper"]/header/div[6]/div/div[2]/div[1]/div/button[2]')
         rent_button.click()
 
         time.sleep(1000)
