@@ -85,8 +85,8 @@ class Dashboard:
 
     def setup_first_frame(self):
         """
-                Set up the first frame for user to input the city and location.
-                """
+        Set up the first frame for user to input the city and location.
+        """
         self.frame_first = CTkFrame(self.frame_main)
         self.frame_first.grid(row=1, column=0, sticky="nsew", columnspan=2)
 
@@ -113,8 +113,8 @@ class Dashboard:
 
     def setup_second_frame(self):
         """
-                Set up the second frame with a tab view for selecting property type.
-                """
+        Set up the second frame with a tab view for selecting property type.
+        """
         self.frame_second = CTkFrame(self.frame_main)
 
         # Configure rows for the second frame
@@ -138,15 +138,15 @@ class Dashboard:
 
         # Radio button options for each tab
         homes_radio_options = [
-            ("House", "house"), ("Flat", "flat"), ("Upper Portion", "upper_portion"),
-            ("Lower Portion", "lower_portion"), ("Farm House", "farm_house"), ("Room", "room"),
+            ("House", "house"), ("Flat", "flat"), ("Upper Portion", "upper portion"),
+            ("Lower Portion", "lower portion"), ("Farm House", "farm house"), ("Room", "room"),
             ("Penthouse", "penthouse")
         ]
 
         plots_radio_options = [
-            ("Residential Plot", "residential_plot"), ("Commercial Plot", "commercial_plot"),
-            ("Agricultural Land", "agricultural_land"), ("Industrial Land", "industrial_land"),
-            ("Plot Files", "plot_files"), ("Plot Form", "plot_form")
+            ("Residential Plot", "residential plot"), ("Commercial Plot", "commercial plot"),
+            ("Agricultural Land", "agricultural land"), ("Industrial Land", "industrial land"),
+            ("Plot File", "plot file"), ("Plot Form", "plot form")
         ]
 
         commercial_radio_options = [
@@ -170,8 +170,8 @@ class Dashboard:
 
     def setup_third_frame(self):
         """
-                Set up the third frame with input fields for price range, rent/buy option, and number of beds.
-                """
+        Set up the third frame with input fields for price range, rent/buy option, and number of beds.
+        """
         self.frame_third = CTkFrame(self.frame_main)
 
         # Configure rows for the third frame
@@ -203,23 +203,25 @@ class Dashboard:
                                           value="buy", width=50)
         radiobutton_buy.grid(row=0, column=2, padx=20, pady=20, sticky="w")
 
+        self.bed_label = CTkLabel(self.subframe_third, text="SELECT BEDS", font=("Arial", 14, "bold"))
+        self.bed_label.grid(row=1, column=2, padx=20, pady=0, sticky="n")
         self.beds_var = StringVar(value="Any")
         optionmenu_beds = CTkOptionMenu(self.subframe_third, values=["Any", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "None"], variable=self.beds_var)
-        optionmenu_beds.grid(row=1, column=2, padx=40, pady=20)
+        optionmenu_beds.grid(row=1, column=2, padx=40, pady=0, sticky="s")
 
 
     def get_tab(self, tab):
         """
-                Retrieve the selected tab name and store the corresponding property type.
+        Retrieve the selected tab name and store the corresponding property type.
 
-                :param tab_name: The name of the tab selected.
-                """
+        :param tab_name: The name of the tab selected.
+        """
         self.selected_tab = tab
 
     def change_appearance_mode(self):
         """
-                Toggle the appearance mode between light and dark, and update the change_mode_button image.
-                """
+        Toggle the appearance mode between light and dark, and update the change_mode_button image.
+        """
         if get_appearance_mode() == "Dark":
             set_appearance_mode("light")
             set_default_color_theme(self.light_theme_path)
@@ -231,8 +233,8 @@ class Dashboard:
 
     def next_frame(self):
         """
-                Navigate to the next frame if user inputs are valid, otherwise display an error message.
-                """
+        Navigate to the next frame if user inputs are valid, otherwise display an error message.
+        """
         if self.frame_index == 0:
             if not self.validate_first_frame():
                 return
@@ -248,10 +250,10 @@ class Dashboard:
 
     def show_frame(self, frame):
         """
-                Show the next or previous frame based on the direction argument.
+        Show the next or previous frame based on the direction argument.
 
-                :param direction: A string, either "next" or "back", indicating the direction to navigate.
-                """
+        :param direction: A string, either "next" or "back", indicating the direction to navigate.
+        """
         if frame == "next" and self.frame_index < len(self.frame_list) - 1:
             self.frame_list[self.frame_index].grid_forget()
             self.frame_index += 1
@@ -270,10 +272,10 @@ class Dashboard:
 
     def validate_first_frame(self):
         """
-                Validate the inputs provided in the first frames.
+        Validate the inputs provided in the first frames.
 
-                :return: Boolean indicating whether the inputs are valid.
-                """
+        :return: Boolean indicating whether the inputs are valid.
+        """
         error_label_first_frame = CTkLabel(self.frame_first, text="", text_color="red", font=("Arial", 12))
         error_label_first_frame.configure(text="")
         error_label_first_frame.grid(row=2, columnspan=2)
@@ -314,16 +316,16 @@ class Dashboard:
 
     def search_properties(self):
         self.data = {
-            "city": self.city_entry.get(),
-            "location": self.location_entry.get(),
-            "tab": self.selected_tab,
-            "property_type": self.property_type_var.get(),
-            "min_price": self.min_price_entry.get(),
-            "max_price": self.max_price_entry.get(),
-            "buy/rent": self.rent_buy_var.get(),
-            "beds": self.beds_var.get(),
+            "city": self.city_entry.get().lower(),
+            "location": self.location_entry.get().lower(),
+            "tab": self.selected_tab.lower(),
+            "property_type": self.property_type_var.get().lower(),
+            "min_price": self.min_price_entry.get().lower(),
+            "max_price": self.max_price_entry.get().lower(),
+            "buy/rent": self.rent_buy_var.get().lower(),
+            "beds": self.beds_var.get().lower(),
         }
-        print(self.data)
+
 
 
 
