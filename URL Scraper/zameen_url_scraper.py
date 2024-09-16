@@ -102,17 +102,4 @@ class Zameen_Scraper:
     # def get_url(self):
     #     current_url = self.driver.current_url
     #     return current_url
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
+
