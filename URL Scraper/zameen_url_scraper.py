@@ -33,7 +33,10 @@ class Zameen_Scraper:
         try:
             logger.debug(f"Select buy or rent in [{self.url}] --> START")
 
-            self.driver.click_element(xpath=f'//button[text()="{self.data.get("buy/rent").title()}"]')
+            if self.data.get("buy/rent") == "buy":
+                self.driver.click_element(xpath='//button[@aria-label="For sale"]')
+            else:
+                self.driver.click_element(xpath='//button[normalize-space()="Rent"]')
 
             logger.info(f"Select buy or rent in [{self.url}] --> SUCCESS")
 
@@ -44,9 +47,9 @@ class Zameen_Scraper:
         try:
             logger.debug(f"Select City in [{self.url}] --> START")
 
-            self.driver.click_element(xpath='//*[@id="body-wrapper"]/header/div[6]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div/div[1]/span')
-            self.driver.input_text(xpath='//*[@id="body-wrapper"]/header/div[6]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[1]/input', value=self.data.get("city"))
-            self.driver.click_element(xpath='//*[@id="body-wrapper"]/header/div[6]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div/div[2]/div/div[1]/div/span/button')
+            self.driver.click_element(xpath='//div[@aria-label="City filter"]//span[@class="b94532fd"]')
+            self.driver.input_text(xpath='//input[@class="e96a3e41"]', value=self.data.get("city"))
+            self.driver.click_element(xpath='//span[@class="_569dbe30"]//button[1]')
 
             logger.info(f"Select City in [{self.url}] --> SUCCESS")
 
@@ -57,8 +60,8 @@ class Zameen_Scraper:
         try:
             logger.debug(f"Select Location in [{self.url}] --> START")
 
-            self.driver.input_text(xpath='//*[@id="body-wrapper"]/header/div[6]/div/div[2]/div[2]/div[1]/div[1]/div[2]/div/div/div/div/div/input', value=self.data.get("location"))
-            self.driver.click_element(xpath='//*[@id="body-wrapper"]/header/div[6]/div/div[2]/div[2]/div[1]/div[1]/div[2]/div/div/div/div[2]/div/ul/div[1]/div/li/button')
+            self.driver.input_text(xpath='//input[@type="text"]', value=self.data.get("location"))
+            self.driver.click_element(xpath='//li[@data-selected="true"]//button[@class="_48de9e1e"]')
 
             logger.info(f"Select Location in [{self.url}] --> SUCCESS")
 
@@ -69,8 +72,13 @@ class Zameen_Scraper:
         try:
             logger.debug(f"Select Property Type in [{self.url}] --> START")
 
-            self.driver.click_element(xpath='//*[@id="body-wrapper"]/header/div[6]/div/div[2]/div[2]/div[1]/div[2]/div[1]/div/div[1]/span')
-            self.driver.click_element(xpath=f'//li[text()="{self.data.get("tab").title()}"]')
+            self.driver.click_element(xpath='//div[@aria-label="Category filter"]//span[@class="b94532fd"]')
+            if self.data.get("tab") == "homes":
+                self.driver.click_element(xpath='//div[@class="_56cacfa2"]//li[1]')
+            elif self.data.get("tab") == "plots":
+                self.driver.click_element(xpath='//div[@class="_56cacfa2"]//li[2]')
+            else:
+                self.driver.click_element(xpath='//div[@class="_56cacfa2"]//li[3]')
             self.driver.click_element(xpath=f'//li[text()="{self.data.get("property_type").title()}"]')
 
             logger.info(f"Select Property Type in [{self.url}] --> SUCCESS")
@@ -82,7 +90,7 @@ class Zameen_Scraper:
         try:
             logger.debug(f"Select Price in [{self.url}] --> START")
 
-            self.driver.click_element(xpath='//*[@id="body-wrapper"]/header/div[6]/div/div[2]/div[2]/div[1]/div[2]/div[2]/div/div[1]/span')
+            self.driver.click_element(xpath='//div[@name="Price (PKR)"]//span[1]')
             self.driver.input_text(xpath=f'//input[@id="activeNumericInput"]', value=self.data.get("min_price"))
             self.driver.input_text(xpath=f'//input[@id="inactiveNumericInput"]', value=self.data.get("max_price"))
 
@@ -96,7 +104,7 @@ class Zameen_Scraper:
         try:
             logger.debug(f"Select Beds in [{self.url}] --> START")
 
-            self.driver.click_element(xpath='//*[@id="body-wrapper"]/header/div[6]/div/div[2]/div[2]/div[1]/div[2]/div[4]/div/div[1]/span')
+            self.driver.click_element(xpath='//div[@name="beds"]//span[1]')
             beds = self.data.get("beds")
             if beds in ("any", "none"):
                 beds = "All"
@@ -111,7 +119,7 @@ class Zameen_Scraper:
         try:
             logger.debug(f"Click Find in [{self.url}] --> START")
 
-            self.driver.click_element(xpath='//*[@id="body-wrapper"]/header/div[6]/div/div[2]/div[2]/div[1]/div[1]/a')
+            self.driver.click_element(xpath='//a[normalize-space()="Find"]')
 
             logger.info(f"Click Find in [{self.url}] --> SUCCESS")
 

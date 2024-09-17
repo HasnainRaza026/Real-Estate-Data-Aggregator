@@ -206,7 +206,7 @@ class Dashboard:
         self.bed_label = CTkLabel(self.subframe_third, text="SELECT BEDS", font=("Arial", 14, "bold"))
         self.bed_label.grid(row=1, column=2, padx=20, pady=0, sticky="n")
         self.beds_var = StringVar(value="Any")
-        optionmenu_beds = CTkOptionMenu(self.subframe_third, values=["Any", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "None"], variable=self.beds_var)
+        optionmenu_beds = CTkOptionMenu(self.subframe_third, values=["Any", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10+", "None"], variable=self.beds_var)
         optionmenu_beds.grid(row=1, column=2, padx=40, pady=0, sticky="s")
 
 
