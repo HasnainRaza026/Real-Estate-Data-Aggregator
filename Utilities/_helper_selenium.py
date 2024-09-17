@@ -13,61 +13,78 @@ class Selenium_Helper:
         self.keys = Keys()
         logger.debug("Initialize chrome Driver --> START")
         self.driver = Chrome(service=Service(ChromeDriverManager().install()), options=options)
-        logger.info("Initialize chrome Driver --> SUCCESS")
+        logger.debug("Initialize chrome Driver --> SUCCESS")
         logger.debug("Initialize Driver Implicit wait --> START")
         self.driver.implicitly_wait(10)
         logger.debug("Initialize Driver Implicit wait --> SUCCESS")
 
     def _get_element(self, xpath):
         try:
-            logger.debug(f"Get {xpath} element --> START")
+            logger.debug(f"Get element [{xpath}]  --> START")
             element = self.driver.find_element(By.XPATH, xpath)
-            logger.info(f"Get {xpath} element --> SUCCESS")
+            logger.debug(f"Get element [{xpath}]  --> SUCCESS")
             return element
         except Exception as error:
-            logger.error(f"Unable to Get {xpath} element --> ERROR [{error}]")
+            logger.error(f"Unable to Get element [{xpath}]  --> ERROR [{error}]")
             return None
 
     def click_element(self, xpath):
         try:
             element = self._get_element(xpath)
             if element is not None:
-                logger.debug(f"Click {xpath} element --> START")
+                logger.debug(f"Click element [{xpath}] --> START")
                 element.click()
-                logger.info(f"Click {xpath} element --> SUCCESS")
+                logger.debug(f"Click element [{xpath}] --> SUCCESS")
             else:
-                logger.error(f"Unable to Click {xpath} element --> ERROR [element is None]")
+                logger.error(f"Unable to Click element [{xpath}] --> ERROR [element is None]")
         except Exception as error:
-            logger.error(f"Unable to Click {xpath} element --> ERROR [{error}]")
+            logger.error(f"Unable to Click element [{xpath}] --> ERROR [{error}]")
 
-    def input_text(self, value, xpath):
+    def input_text(self, xpath, value):
         try:
             element = self._get_element(xpath)
             if element is not None:
+                logger.debug(f"Send keys [{value}] to element [{xpath}] --> START")
                 element.send_keys(value)
+                logger.debug(f"Send keys [{value}] to element [{xpath}] --> SUCCESS")
             else:
-                print("Element not found")
+                logger.error(f"Unable to Send keys [{value}] to element [{xpath}] --> ERROR [element is None]")
         except Exception as error:
-            print(f"Error in Sending the keys to the element: {error}")
+            logger.error(f"Unable to Send keys [{value}] to element [{xpath}] --> ERROR [{error}]")
 
     def goto_page(self, url):
         try:
-            logger.debug(f"Visit page {url} --> START")
+            logger.debug(f"Visit page [{url}] --> START")
             self.driver.get(url)
-            logger.info(f"Visit page {url} --> SUCCESS")
+            logger.debug(f"Visit page [{url}] --> SUCCESS")
         except Exception as error:
-            logger.error(f"Unable to visit page {url} --> ERROR [{error}]")
+            logger.error(f"Unable to visit page [{url}] --> ERROR [{error}]")
 
     def reload_page(self, url):
         try:
-            logger.debug(f"Reload page {url} --> START")
+            logger.debug(f"Reload page [{url}] --> START")
             self.driver.refresh()
-            logger.info(f"Reload page {url} --> SUCCESS")
+            logger.debug(f"Reload page [{url}] --> SUCCESS")
         except Exception as error:
-            logger.error(f"Unable to reload page {url} --> ERROR [{error}]")
+            logger.error(f"Unable to reload page [{url}] --> ERROR [{error}]")
 
     def quit(self):
-        self.driver.quit()
+        try:
+            logger.debug(f"Quit Driver --> START")
+            self.driver.quit()
+            logger.debug(f"Quit Driver --> SUCCESS")
+        except Exception as error:
+            logger.error(f"Unable to Quit Driver --> ERROR [{error}]")
+
+    def get_url(self):
+        try:
+            logger.debug(f"Get Current url --> START")
+            result_page_url = self.driver.current_url
+            logger.debug(f"Get Current url --> SUCCESS")
+            return result_page_url
+        except Exception as error:
+            logger.error(f"Unable to Get Current url --> ERROR [{error}]")
+            return None
 
     def get_chrome_options(self):
         logger.debug("Set chrome driver options --> START")

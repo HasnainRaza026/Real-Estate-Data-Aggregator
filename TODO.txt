@@ -1,0 +1,7 @@
+1. Learn Xpath, and then improve Xpaths
+2. Make graana_url_scraper and lamudi_url_scraper
+3. Make zameen_data_scraper, graana_data_scraper and lamudi_data_scraper
+4. Refactor Visualization code with new format (proper error handling and logging)
+5. get all the cities on all 3 sites, store them in a csv or txt and implement
+functionality to validate city input in Visualization
+6. Add functionality of matching words in input in Visualizations
