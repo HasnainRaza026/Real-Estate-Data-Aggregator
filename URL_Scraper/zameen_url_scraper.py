@@ -44,36 +44,39 @@ class Zameen_Scraper:
             logger.error(f"Unable to Select buy or rent in [{self.url}], Execution Ended --> ERROR [{error}]")
 
     def select_city(self):
+        city = self.data.get("city")
         try:
-            logger.debug(f"Select City in [{self.url}] --> START")
+            logger.debug(f"Select City, [{city}] in [{self.url}] --> START")
 
             self.driver.click_element(xpath='//div[@aria-label="City filter"]//span[@class="b94532fd"]')
-            self.driver.input_text(xpath='//input[@class="e96a3e41"]', value=self.data.get("city"))
+            self.driver.input_text(xpath='//input[@class="e96a3e41"]', value=city)
             self.driver.click_element(xpath='//span[@class="_569dbe30"]//button[1]')
 
-            logger.info(f"Select City in [{self.url}] --> SUCCESS")
+            logger.info(f"Select City [{city}] in [{self.url}] --> SUCCESS")
 
         except Exception as error:
-            logger.error(f"Unable to Select City in [{self.url}], Execution Ended --> ERROR [{error}]")
+            logger.error(f"Unable to Select City [{city}] in [{self.url}], Execution Ended --> ERROR [{error}]")
 
     def select_location(self):
+        location = self.data.get("location")
         try:
-            logger.debug(f"Select Location in [{self.url}] --> START")
+            logger.debug(f"Select Location [{location}] in [{self.url}] --> START")
 
-            self.driver.input_text(xpath='//input[@type="text"]', value=self.data.get("location"))
+            self.driver.input_text(xpath='//input[@type="text"]', value=location)
             self.driver.click_element(xpath='//li[@data-selected="true"]//button[@class="_48de9e1e"]')
 
-            logger.info(f"Select Location in [{self.url}] --> SUCCESS")
+            logger.info(f"Select Location [{location}] in [{self.url}] --> SUCCESS")
 
         except Exception as error:
-            logger.error(f"Unable to Select Location in [{self.url}], Execution Ended --> ERROR [{error}]")
+            logger.error(f"Unable to Select Location [{location}] in [{self.url}], Execution Ended --> ERROR [{error}]")
 
     def select_property_type(self):
+        property_type = f"{self.data.get("tab")} - {self.data.get("property_type")}"
         try:
-            logger.debug(f"Select Property Type in [{self.url}] --> START")
+            logger.debug(f"Select Property Type [{property_type}] in [{self.url}] --> START")
 
             self.driver.click_element(xpath='//div[@aria-label="Category filter"]//span[@class="b94532fd"]')
-            if self.data.get("tab") == "homes":
+            if self.data.get("tab") == "homes/residential":
                 self.driver.click_element(xpath='//div[@class="_56cacfa2"]//li[1]')
             elif self.data.get("tab") == "plots":
                 self.driver.click_element(xpath='//div[@class="_56cacfa2"]//li[2]')
@@ -81,10 +84,10 @@ class Zameen_Scraper:
                 self.driver.click_element(xpath='//div[@class="_56cacfa2"]//li[3]')
             self.driver.click_element(xpath=f'//li[text()="{self.data.get("property_type").title()}"]')
 
-            logger.info(f"Select Property Type in [{self.url}] --> SUCCESS")
+            logger.info(f"Select Property Type [{property_type}] in [{self.url}] --> SUCCESS")
 
         except Exception as error:
-            logger.error(f"Unable to Select Property Type in [{self.url}], Execution Ended --> ERROR [{error}]")
+            logger.error(f"Unable to Select Property Type [{property_type}] in [{self.url}], Execution Ended --> ERROR [{error}]")
 
     def select_price(self):
         try:

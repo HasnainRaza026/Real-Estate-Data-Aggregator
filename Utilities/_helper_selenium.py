@@ -1,3 +1,4 @@
+from Utilities.wait import wait
 from Utilities.logger import logger
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
@@ -8,14 +9,19 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 class Selenium_Helper:
     def __init__(self):
-        options = self.get_chrome_options()
-        logger.debug("Set chrome driver options --> SUCCESS")
+        self.second = 0.75
         self.keys = Keys()
+
+        # options = self.get_chrome_options()
+        # logger.debug("Set chrome driver options --> SUCCESS")
+
         logger.debug("Initialize chrome Driver --> START")
-        self.driver = Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        self.driver = Chrome()
+        # self.driver = Chrome(service=Service(ChromeDriverManager().install()), options=options)
         logger.debug("Initialize chrome Driver --> SUCCESS")
+
         logger.debug("Initialize Driver Implicit wait --> START")
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(15)
         logger.debug("Initialize Driver Implicit wait --> SUCCESS")
 
     def _get_element(self, xpath):
@@ -35,6 +41,7 @@ class Selenium_Helper:
                 logger.debug(f"Click element [{xpath}] --> START")
                 element.click()
                 logger.debug(f"Click element [{xpath}] --> SUCCESS")
+                wait(self.second)
             else:
                 logger.error(f"Unable to Click element [{xpath}] --> ERROR [element is None]")
         except Exception as error:
@@ -47,6 +54,7 @@ class Selenium_Helper:
                 logger.debug(f"Send keys [{value}] to element [{xpath}] --> START")
                 element.send_keys(value)
                 logger.debug(f"Send keys [{value}] to element [{xpath}] --> SUCCESS")
+                wait(self.second)
             else:
                 logger.error(f"Unable to Send keys [{value}] to element [{xpath}] --> ERROR [element is None]")
         except Exception as error:
@@ -61,6 +69,7 @@ class Selenium_Helper:
             logger.error(f"Unable to visit page [{url}] --> ERROR [{error}]")
 
     def reload_page(self, url):
+        wait(self.second)
         try:
             logger.debug(f"Reload page [{url}] --> START")
             self.driver.refresh()
@@ -85,6 +94,7 @@ class Selenium_Helper:
         except Exception as error:
             logger.error(f"Unable to Get Current url --> ERROR [{error}]")
             return None
+
 
     def get_chrome_options(self):
         logger.debug("Set chrome driver options --> START")

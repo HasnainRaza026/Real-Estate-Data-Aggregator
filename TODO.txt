@@ -1,5 +1,6 @@
-1. Learn Xpath, and then improve Xpaths
-2. Make graana_url_scraper and lamudi_url_scraper
+1. Complete graana_url_scraper, resolve rent or buy button pressing issue (add proper wait)
+1. Learn selenium and Xpath tutorial
+2. Make and lamudi_url_scraper
 3. Make zameen_data_scraper, graana_data_scraper and lamudi_data_scraper
 4. Refactor Visualization code with new format (proper error handling and logging)
 5. get all the cities on all 3 sites, store them in a csv or txt and implement

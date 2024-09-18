@@ -151,7 +151,7 @@ class Dashboard:
 
         commercial_radio_options = [
             ("Office", "office"), ("Shop", "shop"), ("Warehouse", "warehouse"),
-            ("Factory", "factory"), ("Building", "building"), ("Other", "other")
+            ("Factory", "factory"), ("Building", "building")
         ]
 
         # Function to create radio buttons for a tab
@@ -164,7 +164,7 @@ class Dashboard:
                 radiobutton.grid(row=i // 3, column=i % 3, padx=20, pady=15)
 
         # Create radio buttons for each tab
-        create_radio_buttons("HOMES", homes_radio_options, self.tabview.tab("HOMES"))
+        create_radio_buttons("HOMES/RESIDENTIAL", homes_radio_options, self.tabview.tab("HOMES"))
         create_radio_buttons("PLOTS", plots_radio_options, self.tabview.tab("PLOTS"))
         create_radio_buttons("COMMERCIAL", commercial_radio_options, self.tabview.tab("COMMERCIAL"))
 
