@@ -3,7 +3,7 @@ class Graana_Scraper:
     def __init__(self, data, selenium_driver):
         self.data = data
         self.driver = selenium_driver
-        self.url = "https://www.graana.com/"
+        self.url = "https://www.graana.com/sale/residential-properties-sale-hyderabad-183/"
 
         logger.debug(f"Get Result Page url of {self.url} --> START")
 
@@ -14,39 +14,23 @@ class Graana_Scraper:
         self.driver.goto_page(url=self.url)
         logger.info(f"Open Webpage {self.url} --> SUCCESS")
 
-        # self.remove_ads()
-
-
-        self.select_buy_or_rent()
         self.select_complete_location()
-        self.click_find()
+        self.select_buy_or_rent()
         self.select_property_type()
-        # self.select_price()
-        #
-        # if self.data.get("tab") == "homes":
-        #     self.select_beds()
-        #
+        self.select_price()
 
-
-    def remove_ads(self):
-        try:
-            logger.debug(f"Remove Ads in [{self.url}] --> START")
-
-            self.driver.click_element(xpath='//button[@id="close-need-help-btn"]')
-
-            logger.info(f"Remove Ads in [{self.url}] --> SUCCESS")
-
-        except Exception as error:
-            logger.error(f"Unable to Remove Ads in [{self.url}], Execution Ended --> ERROR [{error}]")
+        if self.data.get("tab") == "homes/residential":
+            self.select_beds()
 
     def select_buy_or_rent(self):
         try:
             logger.debug(f"Select buy or rent in [{self.url}] --> START")
 
+            self.driver.click_element(xpath='//body/div[@id="__next"]/div[@class="MuiBox-root mui-style-1uxvpob"]/div/div/div[1]/div[1]/button[1]')
             if self.data.get("buy/rent") == "buy":
-                self.driver.click_element(xpath='//button[@class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorSecondary MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorSecondary mui-style-x1hok3"]')
+                self.driver.click_element(xpath='//li[contains(translate(normalize-space(@value), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "buy")]')
             else:
-                self.driver.click_element(xpath='//button[@class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorSecondary MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorSecondary mui-style-1ap4hl3"]')
+                self.driver.click_element(xpath='//li[contains(translate(normalize-space(@value), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "rent")]')
 
             logger.info(f"Select buy or rent in [{self.url}] --> SUCCESS")
 
@@ -58,9 +42,12 @@ class Graana_Scraper:
         try:
             logger.debug(f"Select Complete Location [{location}] in [{self.url}] --> START")
 
-            self.driver.input_text(xpath='//input[@type="text"]', value=location)
-            # self.driver.click_element(xpath='//input[@type="text"]')
-            self.driver.click_element(xpath='//ul[@class="MuiList-root MuiList-padding mui-style-jkt0xd"]//div[@role="button"][position()=1]')
+            self.driver.click_element(xpath='//span[@class="MuiTypography-root MuiTypography-body1New mui-style-15gx462"]')
+            self.driver.input_text(xpath='//input[@id=":r2:" or @class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedStart MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused mui-style-1gnht4k"]', value=self.data.get("city"))
+            self.driver.click_element(xpath='//li[@data-option-index="0"]')
+
+            self.driver.input_text(xpath='//input[@id=":r2:" or @placeholder="Search for more areas"]', value=self.data.get("location"))
+            self.driver.click_element(xpath='//li[@data-option-index="0"]')
 
             logger.info(f"Select Complete Location [{location}] in [{self.url}] --> SUCCESS")
 
@@ -88,44 +75,38 @@ class Graana_Scraper:
             logger.error(f"Unable to Select Property Type [{property_type}] in [{self.url}], Execution Ended --> ERROR [{error}]")
 
     def select_price(self):
+        price = f"Minimum: {self.data.get("min_price")} | Maximum {self.data.get("max_price")}"
         try:
-            logger.debug(f"Select Price in [{self.url}] --> START")
+            logger.debug(f"Select Price [{price}] in [{self.url}] --> START")
 
-            self.driver.click_element(xpath='//div[@name="Price (PKR)"]//span[1]')
-            self.driver.input_text(xpath=f'//input[@id="activeNumericInput"]', value=self.data.get("min_price"))
-            self.driver.input_text(xpath=f'//input[@id="inactiveNumericInput"]', value=self.data.get("max_price"))
+            self.driver.click_element(xpath='//div[@class="MuiBox-root mui-style-1uxvpob"]//div[3]//button[1]')
+            self.driver.input_text(xpath=f'//input[@class="MuiInputBase-input MuiOutlinedInput-input mui-style-1x5jdmq" and @placeholder="0"]', value=self.data.get("min_price"))
+            self.driver.input_text(xpath=f'//input[@class="MuiInputBase-input MuiOutlinedInput-input mui-style-1x5jdmq" and translate(normalize-space(@placeholder), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")= "any"]', value=self.data.get("max_price"))
+            self.driver.scroll_down(pixels=200)
+            self.driver.click_element(xpath='//button[translate(normalize-space(text()), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")= "apply"]')
 
-            logger.info(f"Select Price in [{self.url}]  --> SUCCESS")
+            logger.info(f"Select Price [{price}] in [{self.url}] --> SUCCESS")
 
         except Exception as error:
-            logger.error(f"Unable to Select Price in [{self.url}], Execution Ended --> ERROR [{error}]")
+            logger.error(f"Unable to Select Price [{price}] in [{self.url}], Execution Ended --> ERROR [{error}]")
 
 
     def select_beds(self):
         try:
             logger.debug(f"Select Beds in [{self.url}] --> START")
 
-            self.driver.click_element(xpath='//div[@name="beds"]//span[1]')
+            self.driver.click_element(xpath='//div[@class="MuiBox-root mui-style-1uxvpob"]//div//div[5]//button[1]')
             beds = self.data.get("beds")
             if beds in ("any", "none"):
-                beds = "All"
-            self.driver.click_element(xpath=f'//button[text()="{beds}"]')
+                beds = "any"
+            self.driver.click_element(xpath=f'//div[@class="MuiBox-root mui-style-1drmyhy"]//span[translate(normalize-space(text()), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{beds}"]')
+            self.driver.scroll_down(pixels=200)
+            self.driver.click_element(xpath='//button[translate(normalize-space(text()), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")= "apply"]')
 
             logger.info(f"Select Beds in [{self.url}] --> SUCCESS")
 
         except Exception as error:
             logger.error(f"Unable to Select Beds in [{self.url}], Execution Ended --> ERROR [{error}]")
-
-    def click_find(self):
-        try:
-            logger.debug(f"Click Find in [{self.url}] --> START")
-
-            self.driver.click_element(xpath='//button[@class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary mui-style-silsk4"]')
-
-            logger.info(f"Click Find in [{self.url}] --> SUCCESS")
-
-        except Exception as error:
-            logger.error(f"Unable to Click Find in [{self.url}], Execution Ended --> ERROR [{error}]")
 
     def webpage_url(self):
         try:

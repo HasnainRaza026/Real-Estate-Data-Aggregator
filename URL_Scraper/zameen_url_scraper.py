@@ -15,7 +15,7 @@ class Zameen_Scraper:
         logger.info(f"Open Webpage {self.url} --> SUCCESS")
 
         # Refresh the page to remove popup ads
-        self.driver.reload_page(url=self.url)
+        self.driver.reload_page()
         logger.info(f"Reload Webpage {self.url} --> SUCCESS")
 
         self.select_buy_or_rent()
@@ -90,17 +90,18 @@ class Zameen_Scraper:
             logger.error(f"Unable to Select Property Type [{property_type}] in [{self.url}], Execution Ended --> ERROR [{error}]")
 
     def select_price(self):
+        price = f"Minimum: {self.data.get("min_price")} | Maximum {self.data.get("max_price")}"
         try:
-            logger.debug(f"Select Price in [{self.url}] --> START")
+            logger.debug(f"Select Price [{price}] in [{self.url}] --> START")
 
             self.driver.click_element(xpath='//div[@name="Price (PKR)"]//span[1]')
             self.driver.input_text(xpath=f'//input[@id="activeNumericInput"]', value=self.data.get("min_price"))
             self.driver.input_text(xpath=f'//input[@id="inactiveNumericInput"]', value=self.data.get("max_price"))
 
-            logger.info(f"Select Price in [{self.url}]  --> SUCCESS")
+            logger.info(f"Select Price [{price}] in [{self.url}]  --> SUCCESS")
 
         except Exception as error:
-            logger.error(f"Unable to Select Price in [{self.url}], Execution Ended --> ERROR [{error}]")
+            logger.error(f"Unable to Select Price [{price}] in [{self.url}], Execution Ended --> ERROR [{error}]")
 
 
     def select_beds(self):

@@ -1,8 +1,9 @@
-1. Complete graana_url_scraper, resolve rent or buy button pressing issue (add proper wait)
 1. Learn selenium and Xpath tutorial
-2. Make and lamudi_url_scraper
-3. Make zameen_data_scraper, graana_data_scraper and lamudi_data_scraper
-4. Refactor Visualization code with new format (proper error handling and logging)
-5. get all the cities on all 3 sites, store them in a csv or txt and implement
+2. make helper function, file for adding methods in xpath
+3. Make lamudi_url_scraper
+4. Make zameen_data_scraper, graana_data_scraper and lamudi_data_scraper
+5. Learn to import figma design in to python code and see if your can change the dashboard design with that
+6. Refactor Visualization code with new format (proper error handling and logging)
+7. get all the cities on all 3 sites, store them in a csv or txt and implement
 functionality to validate city input in Visualization
-6. Add functionality of matching words in input in Visualizations
+8. Add functionality of matching words in input in Visualizations
