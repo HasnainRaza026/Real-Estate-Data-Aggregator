@@ -1,54 +1,56 @@
-from Utilities.logger import logger
+from Utilities import logger
 
-class Graana_Scraper:
+class Lamudi_Scraper:
     def __init__(self, data, selenium_driver):
         self.data = data
         self.driver = selenium_driver
-        self.url = "https://www.graana.com/sale/residential-properties-sale-hyderabad-183/"
+        self.url = "https://www.lamudi.pk/"
 
         logger.debug(f"Get Result Page url of {self.url} --> START")
 
         self.start_scraping()
 
     def start_scraping(self):
-        # Open "https://www.graana.com/" webpage
+        # Open "https://www.lamudi.pk/" webpage
         self.driver.goto_page(url=self.url)
         logger.info(f"Open Webpage {self.url} --> SUCCESS")
 
-        self.select_complete_location()
-        self.select_buy_or_rent()
-        self.select_property_type()
-        self.select_price()
+        # self.driver.scroll_down(pixels=200)
 
-        if self.data.get("tab") == "homes/residential":
-            self.select_beds()
+        self.select_buy_or_rent()
+        self.select_location()
+        # self.click_find()
+        # self.select_property_type()
+        # self.select_price()
+        #
+        # if self.data.get("tab") == "homes/residential":
+        #     self.select_beds()
 
     def select_buy_or_rent(self):
         try:
             logger.debug(f"Select buy or rent in [{self.url}] --> START")
 
-            self.driver.click_element(xpath='//body/div[@id="__next"]/div[@class="MuiBox-root mui-style-1uxvpob"]/div/div/div[1]/div[1]/button[1]')
             if self.data.get("buy/rent") == "buy":
-                self.driver.click_element(xpath='//li[contains(translate(normalize-space(@value), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "buy")]')
+                self.driver.click_element(xpath='//button[translate(normalize-space(text()), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")= "buy"]')
             else:
-                self.driver.click_element(xpath='//li[contains(translate(normalize-space(@value), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "rent")]')
+                self.driver.click_element(xpath='//button[translate(normalize-space(text()), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")= "rent"]')
 
             logger.info(f"Select buy or rent in [{self.url}] --> SUCCESS")
 
         except Exception as error:
             logger.error(f"Unable to Select buy or rent in [{self.url}], Execution Ended --> ERROR [{error}]")
 
-    def select_complete_location(self):
+    def select_location(self):
         location = f"{self.data.get("location")}, {self.data.get("city")}"
         try:
             logger.debug(f"Select Complete Location [{location}] in [{self.url}] --> START")
 
-            self.driver.click_element(xpath='//span[@class="MuiTypography-root MuiTypography-body1New mui-style-15gx462"]')
-            self.driver.input_text(xpath='//input[@id=":r2:" or @class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedStart MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused mui-style-1gnht4k"]', value=self.data.get("city"))
-            self.driver.click_element(xpath='//li[@data-option-index="0"]')
-
-            self.driver.input_text(xpath='//input[@id=":r2:" or @placeholder="Search for more areas"]', value=self.data.get("location"))
-            self.driver.click_element(xpath='//li[@data-option-index="0"]')
+            self.driver.click_element(xpath='//button[@class="dropdown-menu_dropdownTrigger__1QLc2 dropdown-menu_btn__2S9UB"]')
+            self.driver.input_text(xpath='//input[translate(normalize-space(@placeholder), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")= "Search City"]', value=self.data.get("city"))
+            # self.driver.click_element(xpath='//li[@data-option-index="0"]')
+            #
+            # self.driver.input_text(xpath='//input[@id=":r2:" or @placeholder="Search for more areas"]', value=self.data.get("location"))
+            # self.driver.click_element(xpath='//li[@data-option-index="0"]')
 
             logger.info(f"Select Complete Location [{location}] in [{self.url}] --> SUCCESS")
 
@@ -125,6 +127,17 @@ class Graana_Scraper:
         except Exception as error:
             logger.error(f"Unable to Get Result Page url in {self.url}, Execution Ended --> ERROR [{error}]")
             return None
+
+    def click_find(self):
+        try:
+            logger.debug(f"Click Find in [{self.url}] --> START")
+
+            self.driver.click_element(xpath='//button[translate(normalize-space(text()), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")= "search"]')
+
+            logger.info(f"Click Find in [{self.url}] --> SUCCESS")
+
+        except Exception as error:
+            logger.error(f"Unable to Click Find in [{self.url}], Execution Ended --> ERROR [{error}]")
 
 
 

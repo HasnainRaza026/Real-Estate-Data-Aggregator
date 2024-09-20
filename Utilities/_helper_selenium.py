@@ -10,7 +10,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 class Selenium_Helper:
     def __init__(self):
         self.url = None
-        self.second = 0.5
+        self.second = 1
         self.keys = Keys()
 
         # options = self.get_chrome_options()

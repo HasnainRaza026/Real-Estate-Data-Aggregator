@@ -1,5 +1,4 @@
 1. Learn selenium and Xpath tutorial
-2. make helper function, file for adding methods in xpath
 3. Make lamudi_url_scraper
 4. Make zameen_data_scraper, graana_data_scraper and lamudi_data_scraper
 5. Learn to import figma design in to python code and see if your can change the dashboard design with that

@@ -3,6 +3,7 @@ from Utilities._helper_selenium import Selenium_Helper
 from Utilities.logger import logger
 from zameen_url_scraper import Zameen_Scraper
 from graana_url_scraper import Graana_Scraper
+from lamudi_url_scraper import Lamudi_Scraper
 
 def base_url_scraper():
     logger.debug("Initialize Selenium_Helper instance --> START")
@@ -25,6 +26,12 @@ def base_url_scraper():
     # logger.debug("Initialize Graana_Scraper instance -->  SUCCESS")
     # graana_result_url = graana.webpage_url()
     # print(graana_result_url)
+
+    logger.debug("Initialize Lamudi_Scraper instance -->  START")
+    lamudi = Lamudi_Scraper(data, selenium_driver)
+    logger.debug("Initialize Lamudi_Scraper instance -->  SUCCESS")
+    # # graana_result_url = graana.webpage_url()
+    # # print(graana_result_url)
 
 
     time.sleep(1000)
