@@ -1,6 +1,6 @@
 from Utilities.logger import logger
 
-class Graana_Scraper:
+class Graana_URL_Scraper:
     def __init__(self, data, selenium_driver):
         self.data = data
         self.driver = selenium_driver
@@ -8,9 +8,9 @@ class Graana_Scraper:
 
         logger.debug(f"Get Result Page url of {self.url} --> START")
 
-        self.start_scraping()
+        self.start_scraping_url()
 
-    def start_scraping(self):
+    def start_scraping_url(self):
         # Open "https://www.graana.com/" webpage
         self.driver.goto_page(url=self.url)
         logger.info(f"Open Webpage {self.url} --> SUCCESS")
@@ -100,8 +100,8 @@ class Graana_Scraper:
             beds = self.data.get("beds")
             if beds in ("any", "none"):
                 beds = "any"
-            self.driver.click_element(xpath=f'//div[@class="MuiBox-root mui-style-1drmyhy"]//span[translate(normalize-space(text()), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{beds}"]')
             self.driver.scroll_down(pixels=200)
+            self.driver.click_element(xpath=f'//div[@class="MuiBox-root mui-style-1drmyhy"]//span[translate(normalize-space(text()), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="{beds}"]')
             self.driver.click_element(xpath='//button[translate(normalize-space(text()), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")= "apply"]')
 
             logger.info(f"Select Beds in [{self.url}] --> SUCCESS")

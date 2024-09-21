@@ -1,5 +1,5 @@
 from Utilities.logger import logger
-class Zameen_Scraper:
+class Zameen_URL_Scraper:
     def __init__(self, data, selenium_driver):
         self.data = data
         self.driver = selenium_driver
@@ -7,9 +7,9 @@ class Zameen_Scraper:
 
         logger.debug(f"Get Result Page url of {self.url} --> START")
 
-        self.start_scraping()
+        self.start_scraping_url()
 
-    def start_scraping(self):
+    def start_scraping_url(self):
         # Open "https://www.zameen.com/" webpage
         self.driver.goto_page(url=self.url)
         logger.info(f"Open Webpage {self.url} --> SUCCESS")
@@ -24,7 +24,7 @@ class Zameen_Scraper:
         self.select_property_type()
         self.select_price()
 
-        if self.data.get("tab") == "homes":
+        if self.data.get("tab") == "homes/residential":
             self.select_beds()
 
         self.click_find()

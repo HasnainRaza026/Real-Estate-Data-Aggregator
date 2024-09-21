@@ -10,15 +10,15 @@ from webdriver_manager.chrome import ChromeDriverManager
 class Selenium_Helper:
     def __init__(self):
         self.url = None
-        self.second = 1
+        self.second = 0.5
         self.keys = Keys()
 
-        # options = self.get_chrome_options()
-        # logger.debug("Set chrome driver options --> SUCCESS")
+        options = self.get_chrome_options()
+        logger.debug("Set chrome driver options --> SUCCESS")
 
         logger.debug("Initialize chrome Driver --> START")
-        self.driver = Chrome()
-        # self.driver = Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        # self.driver = Chrome()
+        self.driver = Chrome(service=Service(ChromeDriverManager().install()), options=options)
         logger.debug("Initialize chrome Driver --> SUCCESS")
 
         logger.debug("Initialize Driver Implicit wait --> START")
@@ -36,66 +36,44 @@ class Selenium_Helper:
             return None
 
     def click_element(self, xpath):
-        retry = False  # To track if it's a retry attempt
-        for attempt in range(2):  # Try twice: first attempt + retry
-            try:
-                element = self._get_element(xpath)
-                if element is not None:
-                    logger.debug(f"Click element [{xpath}] --> START (Attempt {attempt + 1})")
-                    element.click()
-                    logger.debug(f"Click element [{xpath}] --> SUCCESS (Attempt {attempt + 1})")
-                    wait(self.second)
-                    break  # Exit loop if the element is clicked successfully
-                else:
-                    logger.error(f"Unable to Click element [{xpath}] --> ERROR [element is None]")
-                    if not retry:  # Only reload the page on the first failure
-                        retry = True
-                        logger.info(f"Reloading page and retrying click element [{xpath}] --> START")
-                        self.reload_page()  # Reload the page
-                        logger.info(f"Reloading page [{self.driver.current_url}] --> DONE")
-                    else:
-                        logger.error(f"Click element [{xpath}] --> FAILED after retry")
-            except Exception as error:
-                logger.error(f"Unable to Click element [{xpath}] --> ERROR [{error}] (Attempt {attempt + 1})")
-                if not retry:  # Only reload the page on the first failure
-                    retry = True
-                    logger.info(f"Reloading page and retrying click element [{xpath}] --> START")
-                    self.reload_page()  # Reload the page
-                    logger.info(f"Reloading page [{self.driver.current_url}] --> DONE")
-                else:
-                    logger.error(f"Click element [{xpath}] --> FAILED after retry")
+        try:
+            element = self._get_element(xpath)
+            if element is not None:
+                logger.debug(f"Click element [{xpath}] --> START")
+                element.click()
+                logger.debug(f"Click element [{xpath}] --> SUCCESS")
+                wait(self.second)
+            else:
+                logger.error(f"Failed to Click element [{xpath}] --> ERROR [element is None]")
 
-    def input_text(self, xpath, value):
-        retry = False  # To track if it's a retry attempt
-        for attempt in range(2):  # Try twice: first attempt + retry
-            try:
-                element = self._get_element(xpath)
-                if element is not None:
-                    logger.debug(f"Send keys [{value}] to element [{xpath}] --> START (Attempt {attempt + 1})")
-                    element.send_keys(value)
-                    logger.debug(f"Send keys [{value}] to element [{xpath}] --> SUCCESS (Attempt {attempt + 1})")
-                    wait(self.second)
-                    break  # Exit loop if successful
-                else:
-                    logger.error(f"Failed to Send keys [{value}] to element [{xpath}] --> ERROR [element is None]")
+        except Exception as error:
+            logger.error(f"Failed to Click element [{xpath}] --> ERROR [{error}]")
 
-                    if not retry:  # Only reload the page on the first failure
-                        retry = True
-                        logger.info(f"Reloading page and retrying send keys to element [{xpath}] --> START")
-                        self.reload_page()  # Reload the page
-                        logger.info(f"Reloading page [{self.driver.current_url}] --> DONE")
-                    else:
-                        logger.error(f"Failed to Send keys to element [{xpath}] --> FAILED after retry")
-            except Exception as error:
-                logger.error(
-                    f"Unable to Send keys [{value}] to element [{xpath}] --> ERROR [{error}] (Attempt {attempt + 1})")
-                if not retry:  # Only reload the page on the first failure
-                    retry = True
-                    logger.info(f"Reloading page and retrying send keys to element [{xpath}] --> START")
-                    self.reload_page()  # Reload the page
-                    logger.info(f"Reloading page [{self.driver.current_url}] --> DONE")
-                else:
-                    logger.error(f"Failed to Send keys to element [{xpath}] --> FAILED after retry")
+    def input_text(self, xpath, value, backspace=False, quantity=5):
+        try:
+            element = self._get_element(xpath)
+            if element is not None:
+                if backspace:
+                    self._backspace(element=element, times=quantity)
+                logger.debug(f"Send keys [{value}] to element [{xpath}] --> START")
+                element.send_keys(value)
+                logger.debug(f"Send keys [{value}] to element [{xpath}] --> SUCCESS")
+                wait(self.second)
+            else:
+                logger.error(f"Failed to Send keys [{value}] to element [{xpath}] --> ERROR [element is None]")
+
+        except Exception as error:
+            logger.error(
+                f"Failed to Send keys [{value}] to element [{xpath}] --> ERROR [{error}]")
+
+    def _backspace(self, element, times):
+        try:
+            logger.debug(f"Send Backspace keys --> START")
+            for _ in range(times):
+                element.send_keys(Keys.BACKSPACE)
+            logger.debug(f"Send Backspace keys --> SUCCESS")
+        except Exception as error:
+            logger.error(f"Failed to Send Backspace keys --> ERROR [{error}]")
 
     def goto_page(self, url):
         try:
@@ -107,7 +85,6 @@ class Selenium_Helper:
             logger.error(f"Failed to visit page [{self.url}] --> ERROR [{error}]")
 
     def reload_page(self):
-        wait(self.second)
         try:
             logger.debug(f"Reload page [{self.url}] --> START")
             self.driver.refresh()
@@ -132,6 +109,7 @@ class Selenium_Helper:
             logger.error(f"Failed to Quit Driver --> ERROR [{error}]")
 
     def get_url(self):
+        wait(self.second)
         try:
             logger.debug(f"Get Current url --> START")
             result_page_url = self.driver.current_url
