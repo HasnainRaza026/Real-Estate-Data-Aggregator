@@ -1,7 +1,7 @@
 from Utilities.logger import logger
 from Utilities._helper_bs4 import BS4_Helper
 
-class Zameen_Data_Scraper:
+class Graana_Data_Scraper:
     def __init__(self, url):
         self.url = url
         self.soap = BS4_Helper(self.url)
