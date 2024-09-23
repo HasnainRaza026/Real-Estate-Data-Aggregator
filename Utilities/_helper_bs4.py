@@ -3,10 +3,62 @@ import requests
 from Utilities.logger import logger
 
 class BS4_Helper:
-    def __init__(self, url):
+    def __init__(self, url, zameen=False, graana=False, lamudi=False):
+        self.zameen = zameen
+        self.graana = graana
+        self.lamudi = lamudi
+
         self.url = url
+        self.soup = None
         self.data = {}
 
+        self._make_bs4_instance()
+
+    def get_data(self, url, page, list_css, url_css, price_css, location_css, beds_css,
+                 baths_css, images_css):
+        self.url = url
+        try:
+            logger.debug(f"Make BS4 Instance for [{self.url}] --> START")
+            self._make_bs4_instance()
+            logger.debug(f"Make BS4 Instance for [{self.url}] --> SUCCESS")
+
+            logger.debug(f"Get data list in [{self.url}] --> START")
+            data_list = self._get_list(list_css=list_css)
+            logger.debug(f"Get data list in [{self.url}] --> SUCCESS")
+
+            logger.debug("Get data from the list --> START")
+            for index, list_item in enumerate(data_list):
+                data_location = self._get_location(list_item=list_item, location_css=location_css)
+                unique_key = f"{data_location} [{page+1} - {index+1}]"
+                self.data[unique_key] = {}
+
+                data_price = self._get_price(list_item=list_item, price_css=price_css)
+                self.data[unique_key]["price"] = data_price
+
+                data_beds = self._get_beds(list_item=list_item, beds_css=beds_css)
+                self.data[unique_key]["beds"] = data_beds
+
+                data_baths = self._get_baths(list_item=list_item, baths_css=baths_css)
+                self.data[unique_key]["baths"] = data_baths
+
+                data_url = self._get_url(list_item=list_item, url_css=url_css)
+                if self.zameen:
+                    data_url = "https://www.zameen.com/" + data_url
+                elif self.graana:
+                    data_url = "https://www.graana.com/" + data_url
+                self.data[unique_key]["url"] = data_url
+
+                data_img = self._get_images(list_item=list_item, images_css=images_css)
+                # print(data_img)
+                self.data[unique_key]["img"] = data_img
+                logger.debug(f"Get data from the list item [{index + 1}] --> SUCCESS")
+            logger.debug("Get data from the complete list --> SUCCESS")
+
+        except Exception as error:
+            logger.error(f"Unable to Get data from the list --> ERROR [{error}]")
+            return None
+
+    def _make_bs4_instance(self):
         response = self._get_html()
         if response is not None:
             logger.debug(f"Making BeautifulSoup Instance --> START")
@@ -20,13 +72,31 @@ class BS4_Helper:
             logger.debug(f"Get HTML of [{self.url}] --> START")
             response = requests.get(self.url)
             response.raise_for_status()
-            logger.info(f"Get HTML of [{self.url}] --> SUCCESS")
+            logger.debug(f"Get HTML of [{self.url}] --> SUCCESS")
             return response
         except Exception as error:
             logger.error(f"Unable to Get HTML of [{self.url}], Execution Ended --> ERROR [{error}]")
             return None
 
-    def get_list(self, list_css):
+    def total_properties_found(self, property_css):
+        try:
+            logger.debug(f"Get Total Number of Properties using [{property_css}] in [{self.url}] --> START")
+            all_tags = self.soup.select(property_css)
+            if self.zameen:
+                total_properties = [tag.get_text() for tag in all_tags if 'Properties' in tag.get_text()]
+                total_properties = total_properties[0].split()
+                total_properties = int(total_properties[0])
+            elif self.graana:
+                total_properties = all_tags[0].get_text()
+                total_properties = total_properties.split()
+                total_properties = int(total_properties[1])
+            logger.debug(f"Get Total Number of Properties using [{property_css}] in [{self.url}] --> SUCCESS")
+            return total_properties
+        except Exception as error:
+            logger.error(f"Unable to Get Total Number of Properties using [{property_css}] in [{self.url}] --> ERROR [{error}]")
+            return None
+
+    def _get_list(self, list_css):
         try:
             logger.debug(f"Get list using [{list_css}] in [{self.url}] --> START")
             data_list = self.soup.select(list_css)
@@ -34,37 +104,6 @@ class BS4_Helper:
             return data_list
         except Exception as error:
             logger.error(f"Unable to Get list using [{list_css}] in [{self.url}] --> ERROR [{error}]")
-            return None
-
-    def get_data(self, data_list, url_css, price_css, location_css, beds_css, baths_css, images_css):
-        try:
-            logger.debug("Get data from the list --> START")
-            for index, list_item in enumerate(data_list):
-                data_location = self._get_location(list_item=list_item, location_css=location_css)
-                unique_key = f"{data_location} [{index}]"
-                self.data[unique_key] = {}
-
-                data_price = self._get_price(list_item=list_item, price_css=price_css)
-                self.data[unique_key]["price"] = data_price
-
-                data_beds = self._get_beds(list_item=list_item, beds_css=beds_css)
-                self.data[unique_key]["beds"] = data_beds
-
-                data_baths = self._get_baths(list_item=list_item, baths_css=baths_css)
-                self.data[unique_key]["baths"] = data_baths
-
-                data_url = self._get_url(list_item=list_item, url_css=url_css)
-                self.data[unique_key]["url"] = data_url
-
-                data_img = self._get_images(list_item=list_item, images_css=images_css)
-                self.data[unique_key]["img"] = data_img
-                logger.info(f"Get data from the list item [{index + 1}] --> SUCCESS")
-
-            logger.info("Get data from the complete list --> SUCCESS")
-            return self.data
-
-        except Exception as error:
-            logger.error(f"Unable to Get data from the list --> ERROR [{error}]")
             return None
 
     def _get_url(self, list_item, url_css):
@@ -119,6 +158,8 @@ class BS4_Helper:
         try:
             logger.debug(f"Get Baths in data using [{baths_css}] in [{self.url}] --> START")
             elements = list_item.select(baths_css)
+            if self.graana:
+                elements = list(elements[1])
             data = self._helper_get(elements=elements, css=baths_css)
             if data is not None:
                 logger.debug(f"Get Baths in data using [{baths_css}] in [{self.url}] --> SUCCESS")
@@ -131,6 +172,7 @@ class BS4_Helper:
         try:
             logger.debug(f"Get images in data using [{images_css}] in [{self.url}] --> START")
             elements = list_item.select(images_css)
+            print(elements)
             data = self._helper_get(elements=elements, css=images_css, is_img=True)
             if data is not None:
                 logger.debug(f"Get images in data using [{images_css}] in [{self.url}] --> SUCCESS")
@@ -147,6 +189,9 @@ class BS4_Helper:
                 return data
             elif is_img:
                 data = element.get('src')
+                if data is None:
+                    data = element.get('data-src')
+                    return data
                 return data
             data_url = element.get_text()
             return data_url
