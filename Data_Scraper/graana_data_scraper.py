@@ -22,8 +22,8 @@ class Graana_Data_Scraper:
                             url_css='a', price_css='div[class="MuiTypography-root MuiTypography-h4New mui-style-gz23my"]',
                             location_css='h5', beds_css='div[class="MuiTypography-root MuiTypography-body2New mui-style-1548769"]',
                             baths_css='div[class="MuiTypography-root MuiTypography-body2New mui-style-1548769"]',
-                            images_css='img[class="swiper-lazy swiper-lazy-loaded"]')
-            self.url = self.url.replace(f"-{page+1}.html", f"-{page+2}.html")
+                            images_css='div[class="swiper-lazy MuiBox-root mui-style-cqtyl0"] img')
+            self.url = self.url.replace(f"page={page+1}", f"page={page+2}")
             logger.info(f"Scrap Property Data from Page {page+1} --> SUCCESS")
 
         self.data = self.soap.data

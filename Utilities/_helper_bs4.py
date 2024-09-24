@@ -27,6 +27,7 @@ class BS4_Helper:
             logger.debug(f"Get data list in [{self.url}] --> SUCCESS")
 
             logger.debug("Get data from the list --> START")
+
             for index, list_item in enumerate(data_list):
                 data_location = self._get_location(list_item=list_item, location_css=location_css)
                 unique_key = f"{data_location} [{page+1} - {index+1}]"
@@ -49,9 +50,11 @@ class BS4_Helper:
                 self.data[unique_key]["url"] = data_url
 
                 data_img = self._get_images(list_item=list_item, images_css=images_css)
-                # print(data_img)
+                if self.graana:
+                    data_img = "https://www.graana.com/" + data_img
                 self.data[unique_key]["img"] = data_img
                 logger.debug(f"Get data from the list item [{index + 1}] --> SUCCESS")
+
             logger.debug("Get data from the complete list --> SUCCESS")
 
         except Exception as error:
@@ -90,6 +93,10 @@ class BS4_Helper:
                 total_properties = all_tags[0].get_text()
                 total_properties = total_properties.split()
                 total_properties = int(total_properties[1])
+            else:
+                total_properties = all_tags[0].get_text()
+                total_properties = total_properties.split()
+                total_properties = int(total_properties[4])
             logger.debug(f"Get Total Number of Properties using [{property_css}] in [{self.url}] --> SUCCESS")
             return total_properties
         except Exception as error:
@@ -172,7 +179,6 @@ class BS4_Helper:
         try:
             logger.debug(f"Get images in data using [{images_css}] in [{self.url}] --> START")
             elements = list_item.select(images_css)
-            print(elements)
             data = self._helper_get(elements=elements, css=images_css, is_img=True)
             if data is not None:
                 logger.debug(f"Get images in data using [{images_css}] in [{self.url}] --> SUCCESS")
