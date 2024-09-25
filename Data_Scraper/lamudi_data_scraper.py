@@ -17,15 +17,17 @@ class Lamudi_Data_Scraper:
         total_properties = self.soap.total_properties_found(property_css='div[class="flex flexYcenter flexBetween u-mb8"] div')
         pages = math.ceil(total_properties/25)  # Rounding up to the next whole number
         logger.info(f"{total_properties} Total Properties found, split into {pages} Pages in {self.url}")
-        # for page in range(pages):
-        #     self.data = self.soap.get_data(url=self.url, page=page, list_css='div[class="MuiBox-root mui-style-17zbhp0"]',
-        #                     url_css='a', price_css='div[class="MuiTypography-root MuiTypography-h4New mui-style-gz23my"]',
-        #                     location_css='h5', beds_css='div[class="MuiTypography-root MuiTypography-body2New mui-style-1548769"]',
-        #                     baths_css='div[class="MuiTypography-root MuiTypography-body2New mui-style-1548769"]',
-        #                     images_css='div[class="swiper-lazy MuiBox-root mui-style-cqtyl0"] img')
-        #     self.url = self.url.replace(f"page={page+1}", f"page={page+2}")
-        #     logger.info(f"Scrap Property Data from Page {page+1} --> SUCCESS")
-        #
+        for page in range(pages):
+            self.data = self.soap.get_data(url=self.url, page=page, list_css='div[class="card-horizontal_cardHorizontal__OzX3s"]',
+                            url_css='a', price_css='h4',
+                            location_css='div[class="card-horizontal_cardSubTitle__3FJyc"]', beds_css='div[class="card-horizontal_cardSpecs__3U-Ym"] div',
+                            baths_css='div[class="card-horizontal_cardSpecs__3U-Ym"] div',
+                            images_css='figure[class="card-horizontal_imgSlides__2NL7C"]')  # Can't found image
+            if page+1 == 1:
+                self.url = self.url + f"?page={page+1}"
+            self.url = self.url.replace(f"?page={page+1}", f"?page={page+2}")
+            logger.info(f"Scrap Property Data from Page {page+1} --> SUCCESS")
+
         # self.data = self.soap.data
 
 

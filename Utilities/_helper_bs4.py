@@ -44,9 +44,11 @@ class BS4_Helper:
 
                 data_url = self._get_url(list_item=list_item, url_css=url_css)
                 if self.zameen:
-                    data_url = "https://www.zameen.com/" + data_url
+                    data_url = "https://www.zameen.com" + data_url
                 elif self.graana:
-                    data_url = "https://www.graana.com/" + data_url
+                    data_url = "https://www.graana.com" + data_url
+                else:
+                    data_url = "https://www.lamudi.pk" + data_url
                 self.data[unique_key]["url"] = data_url
 
                 data_img = self._get_images(list_item=list_item, images_css=images_css)
@@ -153,6 +155,10 @@ class BS4_Helper:
         try:
             logger.debug(f"Get Beds in data using [{beds_css}] in [{self.url}] --> START")
             elements = list_item.select(beds_css)
+            if self.lamudi:
+                elements = list(elements[1])
+                data = elements[1]
+                return data
             data = self._helper_get(elements=elements, css=beds_css)
             if data is not None:
                 logger.debug(f"Get Beds in data using [{beds_css}] in [{self.url}] --> SUCCESS")
@@ -167,6 +173,10 @@ class BS4_Helper:
             elements = list_item.select(baths_css)
             if self.graana:
                 elements = list(elements[1])
+            elif self.lamudi:
+                elements = list(elements[2])
+                data = elements[1]
+                return data
             data = self._helper_get(elements=elements, css=baths_css)
             if data is not None:
                 logger.debug(f"Get Baths in data using [{baths_css}] in [{self.url}] --> SUCCESS")
